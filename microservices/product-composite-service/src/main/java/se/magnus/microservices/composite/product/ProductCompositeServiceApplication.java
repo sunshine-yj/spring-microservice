@@ -1,13 +1,13 @@
-package se.magnus.microservices.core.product;
+package se.magnus.microservices.composite.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProductServiceApplication {
+public class ProductCompositeServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProductServiceApplication.class, args);
+		SpringApplication.run(ProductCompositeServiceApplication.class, args);
 	}
 
 }

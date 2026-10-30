@@ -1,10 +1,10 @@
-package se.magnus.microservices.core.product;
+package se.magnus.microservices.composite.product;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProductServiceApplicationTests {
+class ProductCompositeServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
