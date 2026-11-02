@@ -1,8 +1,5 @@
 package se.magnus.util.http;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import se.magnus.api.exceptions.InvalidInputException;
 import se.magnus.api.exceptions.NotFoundException;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 class GlobalControllerExceptionHandler {
@@ -27,12 +26,12 @@ class GlobalControllerExceptionHandler {
     return createHttpErrorInfo(NOT_FOUND, request, ex);
   }
 
-  @ResponseStatus(UNPROCESSABLE_ENTITY)
+  @ResponseStatus(UNPROCESSABLE_CONTENT)
   @ExceptionHandler(InvalidInputException.class)
   public @ResponseBody HttpErrorInfo handleInvalidInputException(
     ServerHttpRequest request, InvalidInputException ex) {
 
-    return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    return createHttpErrorInfo(UNPROCESSABLE_CONTENT, request, ex);
   }
 
   private HttpErrorInfo createHttpErrorInfo(
