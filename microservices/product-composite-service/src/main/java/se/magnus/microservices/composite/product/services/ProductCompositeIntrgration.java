@@ -44,8 +44,8 @@ public class ProductCompositeIntrgration implements ProductService, Recommendati
             ObjectMapper mapper,
             @Value("${app.product-service.host}") String productServiceHost,
             @Value("${app.product-service.port}") int productServicePort,
-            @Value("${app.recommendation-service.host}")String recommendationServiceHost,
-            @Value("${app.recommendation-service.port}")String recommendationServicePort,
+            @Value("${app.recommendation-service.host}") String recommendationServiceHost,
+            @Value("${app.recommendation-service.port}") String recommendationServicePort,
             @Value("${app.review-service.host}") String reviewServiceHost,
             @Value("${app.review-service.port}") int reviewServicePort) {
 
