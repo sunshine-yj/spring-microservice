@@ -1,5 +1,8 @@
 package se.magnus.api.composite.product;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ServiceAddresses {
 
     private final String cmp;
@@ -7,7 +10,12 @@ public class ServiceAddresses {
     private final String rev;
     private final String rec;
 
-    public ServiceAddresses(String cmp, String pro, String rev, String rec) {
+    @JsonCreator
+    public ServiceAddresses(
+            @JsonProperty("cmp") String cmp,
+            @JsonProperty("pro") String pro,
+            @JsonProperty("rev") String rev,
+            @JsonProperty("rec") String rec) {
         this.cmp = cmp;
         this.pro = pro;
         this.rev = rev;

@@ -19,7 +19,7 @@ import se.magnus.microservices.core.review.persistence.ReviewRepository;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class ReviewServiceApplicationTests {
+class ReviewServiceApplicationTests extends MySqlTestBase {
 
 	@Autowired private WebTestClient client;
 
@@ -63,7 +63,7 @@ class ReviewServiceApplicationTests {
 
 		assertEquals(1, repository.count());
 
-		postAndVerifyReview(productId, reviewId, UNPROCESSABLE_ENTITY)
+		postAndVerifyReview(productId, reviewId, UNPROCESSABLE_CONTENT)
 				.jsonPath("$.path").isEqualTo("/review")
 				.jsonPath("$.message").isEqualTo("Duplicate key, Product Id: 1, Review Id:1");
 
@@ -113,7 +113,7 @@ class ReviewServiceApplicationTests {
 
 		int productIdInvalid = -1;
 
-		getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)
+		getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_CONTENT)
 				.jsonPath("$.path").isEqualTo("/review")
 				.jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
 	}

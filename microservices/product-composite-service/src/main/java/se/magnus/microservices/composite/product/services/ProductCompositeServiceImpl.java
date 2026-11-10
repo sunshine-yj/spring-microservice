@@ -15,26 +15,55 @@ import java.util.stream.Collectors;
 public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     private final ServiceUtil serviceUtil;
-    private ProductCompositeIntrgration intrgration;
+    private final ProductCompositeIntegration integration;
 
     public ProductCompositeServiceImpl(
-            ServiceUtil serviceUtil, ProductCompositeIntrgration intrgration) {
+            ServiceUtil serviceUtil, ProductCompositeIntegration integration) {
         this.serviceUtil = serviceUtil;
-        this.intrgration = intrgration;
+        this.integration = integration;
     }
 
 
     @Override
+    public void createProduct(ProductAggregate body) {
+        int productId = body.getProductId();
+        integration.createProduct(new Product(productId, body.getName(), body.getWeight(), null));
+
+        if (body.getRecommendations() != null) {
+            for (RecommendationSummary recommendation : body.getRecommendations()) {
+                integration.createRecommendation(new Recommendation(
+                        productId, recommendation.getRecommendationId(), recommendation.getAuthor(),
+                        recommendation.getRate(), recommendation.getContent(), null));
+            }
+        }
+
+        if (body.getReviews() != null) {
+            for (ReviewSummary review : body.getReviews()) {
+                integration.createReview(new Review(
+                        productId, review.getReviewId(), review.getAuthor(),
+                        review.getSubject(), review.getContent(), null));
+            }
+        }
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+        integration.deleteRecommendations(productId);
+        integration.deleteReviews(productId);
+        integration.deleteProduct(productId);
+    }
+
+    @Override
     public ProductAggregate getProduct(int productId) {
 
-        Product product = intrgration.getProduct(productId);
+        Product product = integration.getProduct(productId);
         if (product == null) {
             throw new NotFoundException("No product found for productId: " + productId);
         }
 
-        List<Recommendation> recommendations = intrgration.getRecommendations(productId);
+        List<Recommendation> recommendations = integration.getRecommendations(productId);
 
-        List<Review> reviews = intrgration.getReviews(productId);
+        List<Review> reviews = integration.getReviews(productId);
 
         return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
     }
@@ -51,12 +80,12 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
         List<RecommendationSummary> recommendationSummaries =
                 (recommendations == null) ? null : recommendations.stream()
-                        .map(r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate()))
+                        .map(r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent()))
                         .collect(Collectors.toList());
 
         List<ReviewSummary> reviewSummaries =
                 (reviews == null) ? null : reviews.stream()
-                        .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject()))
+                        .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent()))
                         .collect(Collectors.toList());
 
         String productAddress = product.getServiceAddress();
