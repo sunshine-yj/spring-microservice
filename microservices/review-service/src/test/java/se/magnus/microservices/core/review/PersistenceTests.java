@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.magnus.microservices.core.review.persistence.ReviewEntity;
 import se.magnus.microservices.core.review.persistence.ReviewRepository;
 
+
 @DataJpaTest
 @Transactional(propagation = NOT_SUPPORTED)
 class PersistenceTests extends MySqlTestBase {
@@ -84,16 +85,12 @@ class PersistenceTests extends MySqlTestBase {
     @Test
     void optimisticLockError() {
 
-        // Store the saved entity in two separate entity objects
         ReviewEntity entity1 = repository.findById(savedEntity.getId()).get();
         ReviewEntity entity2 = repository.findById(savedEntity.getId()).get();
 
-        // Update the entity using the first entity object
         entity1.setAuthor("a1");
         repository.save(entity1);
 
-        // Update the entity using the second entity object.
-        // This should fail since the second entity now holds an old version number, i.e. an Optimistic Lock Error
         assertThrows(OptimisticLockingFailureException.class, () -> {
             entity2.setAuthor("a2");
             repository.save(entity2);
