@@ -2,8 +2,21 @@ server.port: 7002
 spring.web.error.include-message: always
 spring.data.mongodb.auto-index-creation: true
 
+spring.application.name: product
 
-spring.data.mongodb:
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
+spring.mongodb:
   host: localhost
   port: 27017
   database: product-db
@@ -53,7 +66,9 @@ spring.config.activate.on-profile: docker
 
 server.port: 8080
 
-spring.data.mongodb.host: mongodb
+app.eureka-server: eureka
+
+spring.mongodb.host: mongodb
 
 spring.rabbitmq.host: rabbitmq
 
