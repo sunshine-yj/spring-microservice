@@ -8,7 +8,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   product-p1:
     build: microservices/product-service
@@ -19,7 +19,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   recommendation:
     build: microservices/recommendation-service
@@ -30,7 +30,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   recommendation-p1:
     build: microservices/recommendation-service
@@ -41,7 +41,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   review:
     build: microservices/review-service
@@ -52,7 +52,7 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   review-p1:
     build: microservices/review-service
@@ -63,18 +63,18 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   product-composite:
     build: microservices/product-composite-service
     mem_limit: 512m
-    ports:
-      - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,kafka
     depends_on:
       kafka:
-        condition: service_started
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
 
   mongodb:
     image: mongo:8.0.5
@@ -92,7 +92,7 @@ services:
     image: mysql:9.2.0
     mem_limit: 512m
     ports:
-      - "3307:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=rootpwd
       - MYSQL_DATABASE=review-db
@@ -117,6 +117,12 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
@@ -130,5 +136,25 @@ services:
   eureka:
     build: spring-cloud/eureka-server
     mem_limit: 512m
+
+  gateway:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    build: spring-cloud/gateway
+    mem_limit: 512m
     ports:
-      - "8761:8761"
+      - "8443:8443"
+    depends_on:
+      auth-server:
+        condition: service_healthy
+
+  auth-server:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    build: spring-cloud/authorization-server
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD", "wget", "-O -", "-q", "http://localhost:9999/actuator/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 60

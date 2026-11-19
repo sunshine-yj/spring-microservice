@@ -1,4 +1,5 @@
 package se.magnus.microservices.composite.product;
+
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -34,7 +35,11 @@ public class ProductCompositeServiceApplication {
 	@Value("${api.common.contact.url}")     String apiContactUrl;
 	@Value("${api.common.contact.email}")   String apiContactEmail;
 
-
+	/**
+	 * Will exposed on $HOST:$PORT/swagger-ui.html
+	 *
+	 * @return the common OpenAPI documentation
+	 */
 	@Bean
 	public OpenAPI getOpenApiDocumentation() {
 		return new OpenAPI()
