@@ -27,8 +27,7 @@ import java.util.function.Consumer;
 
 @AutoConfigureWebTestClient
 @EnableTestBinder
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-class RecommendationServiceApplicationTests extends MongoDbTestBase {
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"eureka.client.enabled=false", "spring.cloud.config.enabled=false"})class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
 	@Autowired
 	private WebTestClient client;

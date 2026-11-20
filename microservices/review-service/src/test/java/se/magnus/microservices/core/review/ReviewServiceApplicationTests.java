@@ -27,9 +27,7 @@ import java.util.function.Consumer;
 
 @AutoConfigureWebTestClient
 @EnableTestBinder
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
-		"spring.cloud.stream.defaultBinder=rabbit",
-		"logging.level.se.magnus=DEBUG"})
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"eureka.client.enabled=false", "spring.cloud.config.enabled=false"})
 class ReviewServiceApplicationTests extends MySqlTestBase {
 
 	@Autowired
